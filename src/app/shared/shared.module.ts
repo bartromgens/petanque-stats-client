@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { CollapseModule } from 'ngx-bootstrap';
-import { SidebarModule } from 'ng-sidebar';
-
 
 /**
  * The Shared module contains general modules and components to be used in feature modules.
@@ -14,7 +12,6 @@ import { SidebarModule } from 'ng-sidebar';
     CommonModule,
     FormsModule,
     CollapseModule,
-    SidebarModule,
   ],
   declarations: [
   ],
@@ -23,7 +20,6 @@ import { SidebarModule } from 'ng-sidebar';
     CommonModule,
     FormsModule,
     CollapseModule,
-    SidebarModule,
   ],
 })
 export class SharedModule {
