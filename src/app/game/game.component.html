@@ -1,0 +1,71 @@
+<div class="container">
+
+  <div class="m-3"></div>
+
+  <div class="card" *ngIf="games">
+    <div class="card-header">
+      <span class="font-weight-bold">Games</span>
+    </div>
+    <table class="table">
+      <tr>
+        <th>Teams</th>
+        <th>Score</th>
+        <th>Winning Score</th>
+      </tr>
+      <tr *ngFor="let game of games">
+        <td>
+          <div *ngFor="let team of game.teams">
+            <span *ngFor="let player of team.players" [ngClass]="game.teamHasWon(team.id) ? 'text-success' : 'text-danger'">
+              {{ player.user.username }}
+            </span>
+          </div>
+        </td>
+        <td>
+          <div *ngFor="let team of game.teams">
+            <span [ngClass]="game.teamHasWon(team.id) ? 'text-success' : 'text-danger'">
+              {{ team.score.score }}
+            </span>
+          </div>
+        </td>
+        <td>{{ game.max_score }}</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="m-3"></div>
+
+  <div class="card" *ngIf="teams && games">
+    <div class="card-header">
+      <span class="font-weight-bold">Teams</span>
+    </div>
+    <table class="table">
+      <tr>
+        <th>Team</th>
+        <th>Players</th>
+        <th>Games</th>
+        <th>Won</th>
+        <th>Lost</th>
+      </tr>
+      <tr *ngFor="let team of teams">
+        <td>
+          {{ team.displayName() }}
+        </td>
+        <td>
+            <span *ngFor="let player of team.players">
+              {{ player.user.username }}
+            </span>
+        </td>
+        <td>
+          {{ getGamesForTeam(team.id).length }}
+        </td>
+        <td>
+          {{ getGamesWonForTeam(team.id).length }}
+        </td>
+        <td>
+          {{ getGamesLostForTeam(team.id).length }}
+        </td>
+      </tr>
+    </table>
+  </div>
+
+</div>
