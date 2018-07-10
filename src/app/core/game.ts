@@ -1,62 +1,85 @@
 
-export interface GameResource {
+export interface BaseResource {
   id: number;
   url: string;
+}
+
+export interface GameResource extends BaseResource {
   max_score: number;
   teams: TeamResource[];
   scores: TeamScoreResource[];
 }
 
 
-export interface TeamResource {
-  id: number;
-  url: string;
+export interface TeamResource extends BaseResource  {
   players: PlayerResource[];
 }
 
 
-export interface PlayerResource {
-  id: number;
-  url: string;
+export interface PlayerResource extends BaseResource  {
   user: UserResource;
 }
 
 
-export interface UserResource {
-  id: number;
-  url: string;
+export interface UserResource extends BaseResource  {
   email: string;
   username: string;
 }
 
 
-export interface TeamScoreResource {
-  id: number;
-  url: string;
+export interface TeamScoreResource extends BaseResource  {
   score: number;
   team_id: number;
 }
 
 
-export class Game {
+export abstract class BaseObject {
   id: number;
   url: string;
+
+  private static setBaseProperties(resource: BaseResource, baseObject: BaseObject) {
+    baseObject.id = resource.id;
+    baseObject.url = resource.url;
+  }
+
+  protected abstract createObject(): BaseObject;
+
+  protected abstract doCreateFromResource(resource: BaseResource, baseObject: BaseObject);
+
+  public fromResource(resource: BaseResource): BaseObject {
+    const object = this.createObject();
+    BaseObject.setBaseProperties(resource, object);
+    object.doCreateFromResource(resource, object);
+    return object;
+  }
+
+  public fromResources(resources: BaseResource[]): BaseObject[] {
+    const objects = [];
+    for (const resource of resources) {
+      objects.push(this.fromResource(resource));
+    }
+    return objects;
+  }
+}
+
+
+export class Game extends BaseObject {
   maxScore: number;
   teams: Team[] = [];
   scores: TeamScore[] = [];
 
-  public static fromResource(resource: GameResource): Game {
-    console.log('Game::fromResource', resource);
-    const game = new Game();
-    game.id = resource.id;
-    game.url = resource.url;
+  protected createObject(): Game {
+    return Game.createObject();
+  }
+
+  static createObject(): Game {
+    return new Game();
+  }
+
+  protected doCreateFromResource(resource: GameResource, game: Game) {
     game.maxScore = resource.max_score;
-    for (const team of resource.teams) {
-      game.teams.push(Team.fromResource(team));
-    }
-    for (const score of resource.scores) {
-      game.scores.push(TeamScore.fromResource(score));
-    }
+    game.teams = GameFactory.createTeams(resource.teams);
+    game.scores = new TeamScore().fromResources(resource.scores) as TeamScore[];
     for (const team of game.teams) {
       team.score = game.getScoreForTeam(team.id);
     }
@@ -82,22 +105,22 @@ export class Game {
 }
 
 
-export class Team {
-  id: number;
-  url: string;
+export class Team extends BaseObject {
   players: Player[] = [];
   score: TeamScore;
 
-  static fromResource(resource: TeamResource): Team {
-    console.log('Team::fromResource', resource);
-    const team = new Team();
-    team.id = resource.id;
-    team.url = resource.url;
-    console.log(resource.players);
+  protected createObject(): Team {
+    return Team.createObject();
+  }
+
+  static createObject(): Team {
+    return new Team();
+  }
+
+  protected doCreateFromResource(resource: TeamResource, team: Team) {
     for (const player of resource.players) {
-      team.players.push(Player.fromResource(player));
+      team.players.push(new Player().fromResource(player) as Player);
     }
-    return team;
   }
 
   displayName(): string {
@@ -110,18 +133,19 @@ export class Team {
 }
 
 
-export class Player {
-  id: number;
-  url: string;
+export class Player extends BaseObject {
   user: User;
 
-  static fromResource(resource: PlayerResource): Player {
-    console.log('Player::fromResource', resource);
-    const player = new Player();
-    player.id = resource.id;
-    player.url = resource.url;
-    player.user = User.fromResource(resource.user);
-    return player;
+  protected createObject(): Player {
+    return Player.createObject();
+  }
+
+  static createObject(): Player {
+    return new Player();
+  }
+
+  protected doCreateFromResource(resource: PlayerResource, player: Player) {
+    player.user = new User().fromResource(resource.user) as User;
   }
 
   displayName(): string {
@@ -130,68 +154,54 @@ export class Player {
 }
 
 
-export class User {
-  id: number;
-  url: string;
+export class User extends BaseObject {
   username: string;
   email: string;
 
-  static fromResource(resource: UserResource): User {
-    console.log('User::fromResource', resource);
-    const user = new User();
-    user.id = resource.id;
-    user.url = resource.url;
+  protected createObject(): User {
+    return User.createObject();
+  }
+
+  static createObject(): User {
+    return new User();
+  }
+
+  protected doCreateFromResource(resource: UserResource, user: User) {
     user.username = resource.username;
     user.email = resource.email;
-    return user;
   }
 }
 
 
-export class TeamScore {
-  id: number;
-  url: string;
+export class TeamScore extends BaseObject {
   score: number;
   team_id: number;
 
-  static fromResource(resource: TeamScoreResource): TeamScore {
-    console.log('TeamScore::fromResource', resource);
-    const teamScore = new TeamScore();
-    teamScore.id = resource.id;
-    teamScore.url = resource.url;
+  protected createObject(): TeamScore {
+    return TeamScore.createObject();
+  }
+
+  static createObject(): TeamScore {
+    return new TeamScore();
+  }
+
+  protected doCreateFromResource(resource: TeamScoreResource, teamScore: TeamScore) {
     teamScore.score = resource.score;
     teamScore.team_id = resource.team_id;
-    return teamScore;
   }
 }
 
 
 export namespace GameFactory {
-  export function createGame(resource: GameResource): Game {
-    return Game.fromResource(resource);
-  }
-
   export function createGames(resources: GameResource[]): Game[] {
-    const games = [];
-    for (const resource of resources) {
-      games.push(createGame(resource));
-    }
-    return games;
+    return new Game().fromResources(resources) as Game[];
   }
 
   export function createTeams(resources: TeamResource[]): Team[] {
-    const teams = [];
-    for (const resource of resources) {
-      teams.push(Team.fromResource(resource));
-    }
-    return teams;
+    return new Team().fromResources(resources) as Team[];
   }
 
   export function createPlayers(resources: PlayerResource[]): Player[] {
-    const players = [];
-    for (const resource of resources) {
-      players.push(Player.fromResource(resource));
-    }
-    return players;
+    return new Player().fromResources(resources) as Player[];
   }
 }
