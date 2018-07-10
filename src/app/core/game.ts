@@ -1,35 +1,21 @@
-
-export interface BaseResource {
-  id: number;
-  url: string;
-}
-
-export interface GameResource extends BaseResource {
-  max_score: number;
-  teams: TeamResource[];
-  scores: TeamScoreResource[];
-}
+import { BaseResource, GameResource, PlayerResource, TeamResource, TeamScoreResource, UserResource } from './game.resource';
 
 
-export interface TeamResource extends BaseResource  {
-  players: PlayerResource[];
-}
+export namespace GameFactory {
+  export function createGames(resources: GameResource[]): Game[] {
+    return new Game().fromResources(resources) as Game[];
+  }
 
+  export function createTeams(resources: TeamResource[]): Team[] {
+    return new Team().fromResources(resources) as Team[];
+  }
 
-export interface PlayerResource extends BaseResource  {
-  user: UserResource;
-}
-
-
-export interface UserResource extends BaseResource  {
-  email: string;
-  username: string;
-}
-
-
-export interface TeamScoreResource extends BaseResource  {
-  score: number;
-  team_id: number;
+  export function createPlayers(resources: PlayerResource[]): Player[] {
+    return new Player().fromResources(resources) as Player[];
+  }
+  export function createTeamScores(resources: TeamScoreResource[]): TeamScore[] {
+    return new TeamScore().fromResources(resources) as TeamScore[];
+  }
 }
 
 
@@ -49,7 +35,7 @@ export abstract class BaseObject {
   public fromResource(resource: BaseResource): BaseObject {
     const object = this.createObject();
     BaseObject.setBaseProperties(resource, object);
-    object.doCreateFromResource(resource, object);
+    this.doCreateFromResource(resource, object);
     return object;
   }
 
@@ -79,7 +65,7 @@ export class Game extends BaseObject {
   protected doCreateFromResource(resource: GameResource, game: Game) {
     game.maxScore = resource.max_score;
     game.teams = GameFactory.createTeams(resource.teams);
-    game.scores = new TeamScore().fromResources(resource.scores) as TeamScore[];
+    game.scores = GameFactory.createTeamScores(resource.scores);
     for (const team of game.teams) {
       team.score = game.getScoreForTeam(team.id);
     }
@@ -118,9 +104,7 @@ export class Team extends BaseObject {
   }
 
   protected doCreateFromResource(resource: TeamResource, team: Team) {
-    for (const player of resource.players) {
-      team.players.push(new Player().fromResource(player) as Player);
-    }
+    team.players = GameFactory.createPlayers(resource.players);
   }
 
   displayName(): string {
@@ -188,20 +172,5 @@ export class TeamScore extends BaseObject {
   protected doCreateFromResource(resource: TeamScoreResource, teamScore: TeamScore) {
     teamScore.score = resource.score;
     teamScore.team_id = resource.team_id;
-  }
-}
-
-
-export namespace GameFactory {
-  export function createGames(resources: GameResource[]): Game[] {
-    return new Game().fromResources(resources) as Game[];
-  }
-
-  export function createTeams(resources: TeamResource[]): Team[] {
-    return new Team().fromResources(resources) as Team[];
-  }
-
-  export function createPlayers(resources: PlayerResource[]): Player[] {
-    return new Player().fromResources(resources) as Player[];
   }
 }
