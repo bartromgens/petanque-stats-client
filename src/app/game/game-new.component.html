@@ -1,0 +1,91 @@
+<div class="container" *ngIf="isLoaded">
+
+  <div class="m-3"></div>
+
+  <h2>New Game</h2>
+
+  <form [formGroup]="heroForm" (ngSubmit)="onSubmit()">
+
+    <div class="form-group">
+      <label class="center-block">Max score
+        <input type="number" class="form-control" formControlName="maxScore">
+      </label>
+    </div>
+
+    <div class="card">
+
+      <div class="card-header">
+        Team A
+      </div>
+
+      <div class="card-body">
+        <div formArrayName="playersTeamA">
+          <div *ngFor="let player of playersTeamA.controls; let i=index" [formGroupName]="i" >
+            <p>Player {{i + 1}}</p>
+            <div style="margin-left: 1em;">
+              <div class="form-group">
+                <label class="center-block">
+                  <select class="form-control" formControlName="player">
+                    <option *ngFor="let player of players" [value]="player.id">{{ player.displayName() }}</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+            <br>
+          </div>
+          <button (click)="addPlayerTeamA()" class="btn btn-default" type="button">Add Player</button>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <div class="form-group">
+          <label class="center-block">Score
+            <input type="number" class="form-control" formControlName="scoreTeamA">
+          </label>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="m-3"></div>
+
+    <div class="card">
+
+      <div class="card-header">
+        Team B
+      </div>
+
+      <div class="card-body">
+        <div formArrayName="playersTeamB">
+          <div *ngFor="let player of playersTeamB.controls; let i=index" [formGroupName]="i" >
+            <p>Player {{i + 1}}</p>
+            <div style="margin-left: 1em;">
+              <div class="form-group">
+                <label class="center-block">
+                  <select class="form-control" formControlName="player">
+                    <option *ngFor="let player of players" [value]="player.id">{{ player.displayName() }}</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+            <br>
+          </div>
+          <button (click)="addPlayerTeamB()" class="btn btn-default" type="button">Add Player</button>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <div class="form-group">
+          <label class="center-block">Score
+            <input type="number" class="form-control" formControlName="scoreTeamB">
+          </label>
+        </div>
+      </div>
+
+    </div>
+
+  </form>
+
+  <p>Form value: {{ heroForm.value | json }}</p>
+  <p>Form status: {{ heroForm.status | json }}</p>
+</div>

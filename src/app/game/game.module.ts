@@ -4,6 +4,7 @@ import { SharedModule } from '../shared/shared.module';
 
 import { GameRoutingModule } from './game-routing.module';
 import { GameComponent } from './game.component';
+import { GameNewComponent } from './game-new.component';
 
 /**
  * The User module contains view components related
@@ -15,7 +16,8 @@ import { GameComponent } from './game.component';
     GameRoutingModule
   ],
   declarations: [
-    GameComponent
+    GameComponent,
+    GameNewComponent
   ],
 })
 export class GameModule { }
