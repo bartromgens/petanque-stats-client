@@ -58,6 +58,10 @@ export class GameNewComponent implements OnInit {
   get playersTeamB(): FormArray {
     return this.heroForm.get('playersTeamB') as FormArray;
   }
+
+  onSubmit() {
+    console.log('onSubmit()', this.heroForm.value);
+  }
 }
 
 export class PlayerInput {

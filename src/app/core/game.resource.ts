@@ -3,6 +3,7 @@ export interface BaseResource {
   url: string;
 }
 
+
 export interface GameResource extends BaseResource {
   max_score: number;
   teams: TeamResource[];
