@@ -6,12 +6,12 @@ export namespace ObjectFactory {
     return new c();
   }
 
-  export function createFromResource<T extends BaseObject, TR extends BaseResource>(c: {new(): T; }, resource: TR): T {
+  export function createFromResource<T extends BaseObject>(c: {new(): T; }, resource: BaseResource): T {
     const object = new c();
     return object.fromResource(resource, object) as T;
   }
 
-  export function createFromResources<T extends BaseObject, TR extends BaseResource>(c: {new(): T; }, resources: TR[]): T[] {
+  export function createFromResources<T extends BaseObject>(c: {new(): T; }, resources: BaseResource[]): T[] {
     const objects = [];
     for (const resource of resources) {
       objects.push(createFromResource(c, resource));
@@ -25,17 +25,17 @@ export abstract class BaseObject {
   id: number;
   url: string;
 
-  private static setBaseProperties(resource: BaseResource, baseObject: BaseObject) {
-    baseObject.id = resource.id;
-    baseObject.url = resource.url;
-  }
-
   protected abstract doCreateFromResource(resource: BaseResource, baseObject: BaseObject);
 
   public fromResource(resource: BaseResource, object: BaseObject) {
     BaseObject.setBaseProperties(resource, object);
     this.doCreateFromResource(resource, object);
     return object;
+  }
+
+  private static setBaseProperties(resource: BaseResource, baseObject: BaseObject) {
+    baseObject.id = resource.id;
+    baseObject.url = resource.url;
   }
 }
 
