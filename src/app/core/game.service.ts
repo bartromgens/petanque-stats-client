@@ -3,11 +3,11 @@ import { HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
 
-import { CacheService } from './cache.service';
-import { Game, GameFactory, GameResource, Player, PlayerResource, TeamResource } from './game';
-import { Team } from './game';
-
 import { environment } from '../../environments/environment';
+import { CacheService } from './cache.service';
+
+import { Game, ObjectFactory, Player, Team } from './game';
+import { GameResource, PlayerResource, TeamResource } from './game.resource';
 
 
 @Injectable()
@@ -21,7 +21,7 @@ export class GameService {
     const url = GameService.API_BASE_URL + 'games/';
     const observable = new Observable<Game[]>(observer => {
       this.httpClient.get<GameResource[]>(url).subscribe(resources => {
-        observer.next(GameFactory.createGames(resources));
+        observer.next(ObjectFactory.createFromResources(Game, resources));
         observer.complete();
       });
     });
@@ -33,7 +33,7 @@ export class GameService {
     const url = GameService.API_BASE_URL + 'teams/';
     const observable = new Observable<Team[]>(observer => {
       this.httpClient.get<TeamResource[]>(url).subscribe(resources => {
-        observer.next(GameFactory.createTeams(resources));
+        observer.next(ObjectFactory.createFromResources(Team, resources));
         observer.complete();
       });
     });
@@ -45,7 +45,7 @@ export class GameService {
     const url = GameService.API_BASE_URL + 'players/';
     const observable = new Observable<Player[]>(observer => {
       this.httpClient.get<PlayerResource[]>(url).subscribe(resources => {
-        observer.next(GameFactory.createPlayers(resources));
+        observer.next(ObjectFactory.createFromResources(Player, resources));
         observer.complete();
       });
     });

@@ -1,20 +1,22 @@
 import { BaseResource, GameResource, PlayerResource, TeamResource, TeamScoreResource, UserResource } from './game.resource';
 
 
-export namespace GameFactory {
-  export function createGames(resources: GameResource[]): Game[] {
-    return new Game().fromResources(resources) as Game[];
+export namespace ObjectFactory {
+  export function create<T extends BaseObject>(c: {new(): T; }): T {
+    return new c();
   }
 
-  export function createTeams(resources: TeamResource[]): Team[] {
-    return new Team().fromResources(resources) as Team[];
+  export function createFromResource<T extends BaseObject, TR extends BaseResource>(c: {new(): T; }, resource: TR): T {
+    const object = new c();
+    return object.fromResource(resource, object) as T;
   }
 
-  export function createPlayers(resources: PlayerResource[]): Player[] {
-    return new Player().fromResources(resources) as Player[];
-  }
-  export function createTeamScores(resources: TeamScoreResource[]): TeamScore[] {
-    return new TeamScore().fromResources(resources) as TeamScore[];
+  export function createFromResources<T extends BaseObject, TR extends BaseResource>(c: {new(): T; }, resources: TR[]): T[] {
+    const objects = [];
+    for (const resource of resources) {
+      objects.push(createFromResource(c, resource));
+    }
+    return objects;
   }
 }
 
@@ -28,23 +30,12 @@ export abstract class BaseObject {
     baseObject.url = resource.url;
   }
 
-  protected abstract createObject(): BaseObject;
-
   protected abstract doCreateFromResource(resource: BaseResource, baseObject: BaseObject);
 
-  public fromResource(resource: BaseResource): BaseObject {
-    const object = this.createObject();
+  public fromResource(resource: BaseResource, object: BaseObject) {
     BaseObject.setBaseProperties(resource, object);
     this.doCreateFromResource(resource, object);
     return object;
-  }
-
-  public fromResources(resources: BaseResource[]): BaseObject[] {
-    const objects = [];
-    for (const resource of resources) {
-      objects.push(this.fromResource(resource));
-    }
-    return objects;
   }
 }
 
@@ -54,18 +45,10 @@ export class Game extends BaseObject {
   teams: Team[] = [];
   scores: TeamScore[] = [];
 
-  protected createObject(): Game {
-    return Game.createObject();
-  }
-
-  static createObject(): Game {
-    return new Game();
-  }
-
   protected doCreateFromResource(resource: GameResource, game: Game) {
     game.maxScore = resource.max_score;
-    game.teams = GameFactory.createTeams(resource.teams);
-    game.scores = GameFactory.createTeamScores(resource.scores);
+    game.teams = ObjectFactory.createFromResources(Team, resource.teams);
+    game.scores = ObjectFactory.createFromResources(TeamScore, resource.scores);
     for (const team of game.teams) {
       team.score = game.getScoreForTeam(team.id);
     }
@@ -95,16 +78,8 @@ export class Team extends BaseObject {
   players: Player[] = [];
   score: TeamScore;
 
-  protected createObject(): Team {
-    return Team.createObject();
-  }
-
-  static createObject(): Team {
-    return new Team();
-  }
-
   protected doCreateFromResource(resource: TeamResource, team: Team) {
-    team.players = GameFactory.createPlayers(resource.players);
+    team.players = ObjectFactory.createFromResources(Player, resource.players);
   }
 
   displayName(): string {
@@ -120,16 +95,8 @@ export class Team extends BaseObject {
 export class Player extends BaseObject {
   user: User;
 
-  protected createObject(): Player {
-    return Player.createObject();
-  }
-
-  static createObject(): Player {
-    return new Player();
-  }
-
   protected doCreateFromResource(resource: PlayerResource, player: Player) {
-    player.user = new User().fromResource(resource.user) as User;
+    player.user = ObjectFactory.createFromResource(User, resource.user);
   }
 
   displayName(): string {
@@ -142,14 +109,6 @@ export class User extends BaseObject {
   username: string;
   email: string;
 
-  protected createObject(): User {
-    return User.createObject();
-  }
-
-  static createObject(): User {
-    return new User();
-  }
-
   protected doCreateFromResource(resource: UserResource, user: User) {
     user.username = resource.username;
     user.email = resource.email;
@@ -160,14 +119,6 @@ export class User extends BaseObject {
 export class TeamScore extends BaseObject {
   score: number;
   team_id: number;
-
-  protected createObject(): TeamScore {
-    return TeamScore.createObject();
-  }
-
-  static createObject(): TeamScore {
-    return new TeamScore();
-  }
 
   protected doCreateFromResource(resource: TeamScoreResource, teamScore: TeamScore) {
     teamScore.score = resource.score;
