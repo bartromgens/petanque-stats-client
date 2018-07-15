@@ -1,15 +1,23 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { GameComponent } from './game.component';
+import { GamesComponent } from './games.component';
 import { GameNewComponent } from './game-new.component';
+import { TeamsComponent } from './teams.component';
 
 const mapRoutes: Routes = [
   {
     path: '',
-    component: GameComponent,
+    component: GamesComponent,
     data: {
       title: 'Petanque Stats'
+    },
+  },
+  {
+    path: 'games',
+    component: GamesComponent,
+    data: {
+      title: 'Games'
     },
   },
   {
@@ -19,9 +27,16 @@ const mapRoutes: Routes = [
       title: 'Add New Game'
     },
   },
+  {
+    path: 'teams',
+    component: TeamsComponent,
+    data: {
+      title: 'Teams'
+    },
+  },
   // {
   //   path: 'game/:id',
-  //   component: GameComponent,
+  //   component: GamesComponent,
   //   data: {
   //     title: 'Petanque Game'
   //   },

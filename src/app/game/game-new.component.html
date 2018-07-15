@@ -4,7 +4,7 @@
 
   <div class="card border-success">
 
-    <form [formGroup]="heroForm" (ngSubmit)="onSubmit()">
+    <form [formGroup]="gameForm" (ngSubmit)="onSubmit()">
 
       <div class="card-header">
         New Game
@@ -36,7 +36,7 @@
                     <p>Player {{i + 1}}</p>
                     <div class="form-group">
                       <label class="center-block">
-                        <select class="form-control" formControlName="player">
+                        <select class="form-control" formControlName="id">
                           <option *ngFor="let player of players" [value]="player.id">{{ player.displayName() }}</option>
                         </select>
                       </label>
@@ -70,7 +70,7 @@
                     <p>Player {{i + 1}}</p>
                     <div class="form-group">
                       <label class="center-block">
-                        <select class="form-control" formControlName="player">
+                        <select class="form-control" formControlName="id">
                           <option *ngFor="let player of players" [value]="player.id">{{ player.displayName() }}</option>
                         </select>
                       </label>
@@ -107,6 +107,6 @@
 
   <div class="m-3"></div>
 
-  <p>Form value: {{ heroForm.value | json }}</p>
-  <p>Form status: {{ heroForm.status | json }}</p>
+  <p>Form value: {{ gameForm.value | json }}</p>
+  <p>Form status: {{ gameForm.status | json }}</p>
 </div>

@@ -28,6 +28,11 @@ export class GameService {
     return this.cacheService.get(url, observable, this.CACHE_EXPIRATION_MILLIS);
   }
 
+  public createGame(gameData): Observable<any> {
+    const url = GameService.API_BASE_URL + 'games/';
+    return this.httpClient.post(url, gameData);
+  }
+
   // TODO: move to team service
   public getTeams(): Observable<Team[]> {
     const url = GameService.API_BASE_URL + 'teams/';

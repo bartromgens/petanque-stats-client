@@ -6,9 +6,9 @@ import { Game, Team } from '../core/game';
 
 
 @Component({
-  templateUrl: 'game.component.html',
+  templateUrl: 'games.component.html',
 })
-export class GameComponent implements OnInit {
+export class GamesComponent implements OnInit {
   games: Game[];
   teams: Team[];
 
@@ -24,50 +24,5 @@ export class GameComponent implements OnInit {
       this.teams = teams;
       console.log(this.teams);
     });
-  }
-
-  getTeam(teamId: number): Team | null {
-    for (const team of this.teams) {
-      if (team.id === teamId) {
-        return team;
-      }
-    }
-    return null;
-  }
-
-  getGamesForTeam(teamId: number): Game[] {
-    const games = [];
-    for (const game of this.games) {
-      for (const team of game.teams) {
-        if (team.id === teamId) {
-          games.push(game);
-        }
-      }
-    }
-    return games;
-  }
-
-  getGamesWonForTeam(teamId: number): Game[] {
-    const games = this.getGamesForTeam(teamId);
-    const team = this.getTeam(teamId);
-    const gamesWon = [];
-    for (const game of games) {
-      if (game.teamHasWon(team.id)) {
-        gamesWon.push(game);
-      }
-    }
-    return gamesWon;
-  }
-
-  getGamesLostForTeam(teamId: number): Game[] {
-    const games = this.getGamesForTeam(teamId);
-    const team = this.getTeam(teamId);
-    const gamesLost = [];
-    for (const game of games) {
-      if (!game.teamHasWon(team.id)) {
-        gamesLost.push(game);
-      }
-    }
-    return gamesLost;
   }
 }
