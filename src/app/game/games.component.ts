@@ -51,7 +51,7 @@ export class GameComponent implements OnInit {
     const games = this.getGamesForTeam(teamId);
     const team = this.getTeam(teamId);
     const gamesWon = [];
-    for (const game of this.games) {
+    for (const game of games) {
       if (game.teamHasWon(team.id)) {
         gamesWon.push(game);
       }
@@ -63,7 +63,7 @@ export class GameComponent implements OnInit {
     const games = this.getGamesForTeam(teamId);
     const team = this.getTeam(teamId);
     const gamesLost = [];
-    for (const game of this.games) {
+    for (const game of games) {
       if (!game.teamHasWon(team.id)) {
         gamesLost.push(game);
       }
