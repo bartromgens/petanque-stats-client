@@ -1,19 +1,23 @@
-<div class="container">
+<div class="container" *ngIf="teams && games">
 
   <div class="m-3"></div>
 
-  <div class="card" *ngIf="teams && games">
+  <div class="card">
     <div class="card-header">
-      <span class="font-weight-bold">Teams</span>
+      <strong>{{ teams.length }}</strong> teams played <strong>{{ games.length }}</strong> games
     </div>
-    <table class="table">
+    <table class="table table-sm">
       <tr>
         <th>Team</th>
+        <th>Games</th>
         <th [ngStyle]="{'min-width': '200px'}">Won - Lost</th>
       </tr>
       <tr *ngFor="let team of teams">
         <td>
           {{ team.displayName() }}
+        </td>
+        <td>
+          {{ getGamesForTeam(team.id).length }}
         </td>
         <td>
           <div class="progress" [ngStyle]="{'height': '20px'}">

@@ -57,6 +57,17 @@ export class GameService {
     return this.cacheService.get(url, observable, this.CACHE_EXPIRATION_MILLIS);
   }
 
+  public getTrueSkillPlayerRatingHistory(): Observable<{}> {
+    const url = GameService.API_BASE_URL + 'players/trueskill/history/';
+    const observable = new Observable<{}>(observer => {
+      this.httpClient.get<{}>(url).subscribe(resources => {
+        observer.next(resources);
+        observer.complete();
+      });
+    });
+    return this.cacheService.get(url, observable, this.CACHE_EXPIRATION_MILLIS);
+  }
+
   public static getGameById(games: Game[], id: number): Game | null {
     for (const game of games) {
       if (game.id === id) {

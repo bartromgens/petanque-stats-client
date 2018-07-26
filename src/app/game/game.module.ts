@@ -6,6 +6,7 @@ import { GameRoutingModule } from './game-routing.module';
 import { GamesComponent } from './games.component';
 import { GameNewComponent } from './game-new.component';
 import { TeamsComponent } from './teams.component';
+import { PlayerSkillsComponent } from './player-skills.component';
 
 /**
  * The User module contains view components related
@@ -19,7 +20,8 @@ import { TeamsComponent } from './teams.component';
   declarations: [
     GamesComponent,
     GameNewComponent,
-    TeamsComponent
+    TeamsComponent,
+    PlayerSkillsComponent
   ],
 })
 export class GameModule { }

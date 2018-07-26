@@ -4,6 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { GamesComponent } from './games.component';
 import { GameNewComponent } from './game-new.component';
 import { TeamsComponent } from './teams.component';
+import { PlayerSkillsComponent } from './player-skills.component';
 
 const mapRoutes: Routes = [
   {
@@ -34,13 +35,13 @@ const mapRoutes: Routes = [
       title: 'Teams'
     },
   },
-  // {
-  //   path: 'game/:id',
-  //   component: GamesComponent,
-  //   data: {
-  //     title: 'Petanque Game'
-  //   },
-  // }
+  {
+    path: 'players/skills',
+    component: PlayerSkillsComponent,
+    data: {
+      title: 'Player Skills'
+    },
+  }
 ];
 
 

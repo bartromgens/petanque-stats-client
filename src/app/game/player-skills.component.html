@@ -1,0 +1,41 @@
+<div class="container-fluid">
+
+  <div class="m-3"></div>
+
+  <div class="card">
+    <div class="card-header text-center">
+      <a href="https://en.wikipedia.org/wiki/TrueSkill" target="_blank">TrueSkill</a> Player Rank
+    </div>
+    <div class="card-body p-0">
+      <div #playerTrueSkillRankHistoryPlot></div>
+    </div>
+    <div class="card-footer">
+      <span class="text-info">
+        Player rank is conservative: it is 99% sure that the player's skill is actually higher.
+        New players have a high skill uncertainty and start with a low rank (0).
+      </span>
+    </div>
+  </div>
+
+  <div class="m-3"></div>
+
+  <div class="card">
+    <div class="card-header text-center">
+      <a href="https://en.wikipedia.org/wiki/TrueSkill" target="_blank">TrueSkill</a> Player Skill
+    </div>
+    <div class="card-body p-0">
+      <div #playerTrueSkillSkillHistoryPlot></div>
+    </div>
+    <div class="card-footer">
+      <span class="text-info">
+        Skill is the perceived skill. The bounds indicate the uncertainty.
+        More games will decrease uncertainty.
+      </span>
+    </div>
+  </div>
+
+  <div class="m-3"></div>
+
+</div>
+
+
