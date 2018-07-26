@@ -9,14 +9,21 @@ import { ElementRef } from '@angular/core';
 
 export class PlayerRangePlot {
   private static SIGMA_FACTOR = 0.2;
+  private players: Player[];
+  private showRanges = true;
 
-  public static createPlot(players: Player[], ratings: any[], valueKey: string, plotElement: ElementRef) {
-    const series = PlayerRangePlot.createSeries(players, ratings, valueKey);
+  constructor(players: Player[], showRanges: boolean) {
+    this.players = players;
+    this.showRanges = showRanges;
+  }
+
+  public createPlot(players: Player[], ratings: any[], valueKey: string, plotElement: ElementRef) {
+    const series = this.createSeries(players, ratings, valueKey);
     const plotOptions = PlayerRangePlot.createPlotOptions(series);
     return Highcharts.chart(plotElement.nativeElement, plotOptions);
   }
 
-  private static createSeries(players: Player[], ratings, valueKey: string) {
+  private createSeries(players: Player[], ratings, valueKey: string) {
     const series = [];
     let counter = 0;
     for (const player of players) {
@@ -28,7 +35,7 @@ export class PlayerRangePlot {
     return series;
   }
 
-  private static createPlotDate(ratings: any[], playerName: string, valueKey: string) {
+  private createPlotDate(ratings: any[], playerName: string, valueKey: string) {
     const means = [];
     const ranges = [];
     let counter = 0;
@@ -39,27 +46,30 @@ export class PlayerRangePlot {
       }
       const meanPrevious = mean;
       mean = ratings[i][valueKey];
-      const nPlayers = 7; // TODO: actual number of players
-      if (counter > 0 && i < ratings.length - nPlayers && Math.abs(mean - meanPrevious) < 0.001) {
+      const nPlayers = this.players.length;
+      // only show markers when scores change, but always show the latest score as last point
+      if (counter > 0 && i < ratings.length - nPlayers && Math.abs(mean - meanPrevious) < 0.0001) {
         counter++;
         continue;
       }
       means.push([counter, mean]);
-      ranges.push(
-        [
-          counter,
-          mean - ratings[i].sigma * PlayerRangePlot.SIGMA_FACTOR,
-          mean + ratings[i].sigma * PlayerRangePlot.SIGMA_FACTOR
-        ]
-      );
+      if (this.showRanges) {
+        ranges.push(
+          [
+            counter,
+            mean - ratings[i].sigma * PlayerRangePlot.SIGMA_FACTOR,
+            mean + ratings[i].sigma * PlayerRangePlot.SIGMA_FACTOR
+          ]
+        );
+      }
       counter++;
     }
 
     return {ranges: ranges, means: means};
   }
 
-  private static createSerie(ratings: any[], playerName: string, valueKey: string, colorIndex: number) {
-    const plotData = PlayerRangePlot.createPlotDate(ratings, playerName, valueKey);
+  private createSerie(ratings: any[], playerName: string, valueKey: string, colorIndex: number) {
+    const plotData = this.createPlotDate(ratings, playerName, valueKey);
     const lineSerie = {
       data: plotData.means,
       name: playerName,

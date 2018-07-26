@@ -21,6 +21,7 @@ export class PlayerSkillsComponent implements OnInit {
   constructor(private gameService: GameService, private route: ActivatedRoute) {}
   @ViewChild('playerTrueSkillRankHistoryPlot') plotRankElement: ElementRef;
   @ViewChild('playerTrueSkillSkillHistoryPlot') plotSkillElement: ElementRef;
+  @ViewChild('playerTrueSkillSigmaHistoryPlot') plotSigmaElement: ElementRef;
 
   ngOnInit(): void {
     this.gameService.getPlayers().subscribe(players => {
@@ -30,18 +31,30 @@ export class PlayerSkillsComponent implements OnInit {
         this.ratings = ratings['player_rating_history'];
         this.createRankPlot();
         this.createSkillPlot();
+        this.createSigmaPlot();
       });
     });
   }
 
   public createRankPlot() {
     const valueKey = 'rank';
-    const plot = PlayerRangePlot.createPlot(this.players, this.ratings, valueKey, this.plotRankElement);
+    const showRanges = true;
+    const rangePlot = new PlayerRangePlot(this.players, showRanges);
+    const plot = rangePlot.createPlot(this.players, this.ratings, valueKey, this.plotRankElement);
   }
 
   public createSkillPlot() {
     const valueKey = 'skill';
-    const plot = PlayerRangePlot.createPlot(this.players, this.ratings, valueKey, this.plotSkillElement);
+    const showRanges = true;
+    const rangePlot = new PlayerRangePlot(this.players, showRanges);
+    const plot = rangePlot.createPlot(this.players, this.ratings, valueKey, this.plotSkillElement);
+  }
+
+  public createSigmaPlot() {
+    const valueKey = 'sigma';
+    const showRanges = false;
+    const rangePlot = new PlayerRangePlot(this.players, showRanges);
+    const plot = rangePlot.createPlot(this.players, this.ratings, valueKey, this.plotSigmaElement);
   }
 }
 
