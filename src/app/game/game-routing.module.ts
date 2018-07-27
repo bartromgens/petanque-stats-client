@@ -5,6 +5,7 @@ import { GamesComponent } from './games.component';
 import { GameNewComponent } from './game-new.component';
 import { TeamsComponent } from './teams.component';
 import { PlayerSkillsComponent } from './player-skills.component';
+import { TeamSkillsComponent } from './team-skills.component';
 
 const mapRoutes: Routes = [
   {
@@ -36,12 +37,19 @@ const mapRoutes: Routes = [
     },
   },
   {
+    path: 'teams/skills',
+    component: TeamSkillsComponent,
+    data: {
+      title: 'Team Stats'
+    },
+  },
+  {
     path: 'players/skills',
     component: PlayerSkillsComponent,
     data: {
       title: 'Player Skills'
     },
-  }
+  },
 ];
 
 

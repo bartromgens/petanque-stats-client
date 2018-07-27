@@ -89,6 +89,15 @@ export class Team extends BaseObject {
     }
     return name;
   }
+
+  hasPlayer(playerQuery: Player) {
+    for (const player of this.players) {
+      if (player.id === playerQuery.id) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
 
 
